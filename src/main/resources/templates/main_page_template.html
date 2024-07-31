@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <input type="hidden" class="uniqueId" th:value="${uniqueId}" />
+    <input type="hidden" class="accessSource" th:value="${accessSource}" />
+    <title>主页面模板</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var uniqueId = /*[[${uniqueId}]]*/ '';
+            var accessSource = /*[[${accessSource}]]*/ '';
+
+            console.log("uniqueId: " + uniqueId);
+            console.log("accessSource: " + accessSource);
+
+            uniqueId = $('.uniqueId').val();
+            accessSource = $('.accessSource').val();
+
+            console.log("uniqueId: " + uniqueId);
+            console.log("accessSource: " + accessSource);
+
+            // 页面加载时调用 /api/track-visit 接口
+            $.ajax({
+                url: "/api/track-visit",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    uniqueId: uniqueId,
+                    accessSource: accessSource
+                })
+            });
+
+            // 按钮1点击事件
+            $('#button1').click(function () {
+                $.ajax({
+                    url: "/api/button-action",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        uniqueId: uniqueId,
+                        accessSource: accessSource,
+                        action: 'button1'
+                    })
+                });
+            });
+
+            // 按钮2点击事件
+            $('#button2').click(function () {
+                $.ajax({
+                    url: "/api/button-action",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        uniqueId: uniqueId,
+                        accessSource: accessSource,
+                        action: 'button2'
+                    })
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>主页面模板</h1>
+    <p>Unique ID: <span th:text="${uniqueId}"></span></p>
+    <p>Access Source: <span th:text="${accessSource}"></span></p>
+    <button id="button1">按钮1</button>
+    <button id="button2">按钮2</button>
+</body>
+</html>

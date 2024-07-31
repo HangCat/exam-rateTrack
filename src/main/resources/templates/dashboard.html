@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Access Records</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .sub-records { display: none; }
+    </style>
+</head>
+<body>
+<h1>Access Records</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>User ID</th>
+        <th>访问次数</th>
+        <th>邀请访问码</th>
+        <th>Create Time</th>
+        <th>Update Time</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="record : ${accessInfos}" id="record-row-${record.id}">
+        <td th:text="${record.id}"></td>
+        <td th:text="${record.userId}"></td>
+        <td th:text="${record.accessNum}"></td>
+        <td th:text="${record.linkCode}"></td>
+        <td th:text="${#dates.format(record.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${#dates.format(record.updatedTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td>
+            <input type="hidden" class="record-id" th:value="${record.id}" />
+            <button onclick="showSubRecords(this)">查看操作记录</button>
+        </td>
+    </tr>
+    <tr class="sub-records" id="sub-records">
+        <td colspan="7">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>通过链接访问</th>
+                    <th>通过邮件访问</th>
+                    <th>操作类型</th>
+                    <th>Create Time</th>
+                    <th>Update Time</th>
+                </tr>
+                </thead>
+                <tbody id="sub-records-body">
+                <!-- Sub records will be loaded here -->
+                </tbody>
+            </table>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    function showSubRecords(button) {
+        const row = button.closest('tr'); // 获取当前行
+        const recordId = row.querySelector('.record-id').value;
+
+        const subRecordsRow = $(`#sub-records`);
+        const subRecordsBody = $(`#sub-records-body`);
+
+        // 清空内容
+        subRecordsBody.empty(); // 清空子记录内容
+        subRecordsRow.hide(); // 隐藏子记录行，防止显示旧数据
+
+        if (subRecordsRow.is(":visible")) {
+            subRecordsRow.hide();
+        } else {
+            if (subRecordsBody.children().length === 0) {
+                $.get(`/access-records/${recordId}`, function(data) {
+                    console.log(data)
+                    subRecordsBody.empty();
+                    data.forEach(function(subRecord) {
+                        subRecordsBody.append(`
+                                <tr>
+                                    <td>${subRecord.id}</td>
+                                    <td>${subRecord.linkAccess ? '是' : '否'}</td>
+                                    <td>${subRecord.mailAccess ? '是' : '否'}</td>
+                                    <td>${subRecord.actionType}</td>
+                                    <td>${new Date(subRecord.createTime).toLocaleString()}</td>
+                                    <td>${new Date(subRecord.updatedTime).toLocaleString()}</td>
+                                </tr>
+                            `);
+                    });
+                });
+            }
+            subRecordsRow.show();
+        }
+    }
+</script>
+</body>
+</html>
