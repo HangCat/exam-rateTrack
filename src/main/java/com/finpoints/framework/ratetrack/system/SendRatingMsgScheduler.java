@@ -21,7 +21,7 @@ import java.util.UUID;
  * @create 2024-07-30
  */
 @Component
-public class SendEmailScheduler {
+public class SendRatingMsgScheduler {
 
     private final RateInviteSendService smsService;
 
@@ -31,7 +31,7 @@ public class SendEmailScheduler {
 
     private final UserAcccessRepository userAcccessRepository;
 
-    public SendEmailScheduler(
+    public SendRatingMsgScheduler(
             @Qualifier("smsService") RateInviteSendService smsService,
             @Qualifier("emailService") RateInviteSendService emailService,
             UserInfoRepository userInfoRepository,
@@ -99,6 +99,7 @@ public class SendEmailScheduler {
                 }
                 // 2. 修改用户状态为已发送
                 userInfo.setHasSent(true);
+                userInfoRepository.save(userInfo);
                 // 3. UserAction表新增一条记录
                 UserRatingPageAccess userRatingPageAccess = new UserRatingPageAccess();
                 userRatingPageAccess.setUserId(userInfo.getId());

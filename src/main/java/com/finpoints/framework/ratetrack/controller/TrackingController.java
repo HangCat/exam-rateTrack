@@ -4,7 +4,6 @@ import com.finpoints.framework.ratetrack.model.UserRatingPageAccess;
 import com.finpoints.framework.ratetrack.model.UserRatingPageActionRecord;
 import com.finpoints.framework.ratetrack.repository.UserAcccessRepository;
 import com.finpoints.framework.ratetrack.repository.UserAccessRecordRepository;
-import com.finpoints.framework.ratetrack.repository.UserInfoRepository;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.http.ResponseEntity;
@@ -31,14 +30,10 @@ public class TrackingController {
 
     private final UserAccessRecordRepository userAccessRecordRepository;
 
-    private final UserInfoRepository userInfoRepository;
-
     public TrackingController(UserAcccessRepository userAcccessRepository,
-                              UserAccessRecordRepository userAccessRecordRepository,
-                              UserInfoRepository userInfoRepository) {
+                              UserAccessRecordRepository userAccessRecordRepository) {
         this.userAcccessRepository = userAcccessRepository;
         this.userAccessRecordRepository = userAccessRecordRepository;
-        this.userInfoRepository = userInfoRepository;
     }
 
 
